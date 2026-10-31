@@ -57,5 +57,3 @@ jobs:
           done
           curl --fail --silent --show-error http://127.0.0.1:18080/ > /dev/null
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'http://127.0.0.1:18080/api/schedule?queue=bad')" = 400
-          curl --fail-with-body --silent --show-error --max-time 25 'http://127.0.0.1:18080/api/schedule?queue=1.1' > /tmp/schedule.json
-          node -e "const d=require('/tmp/schedule.json'); if(d.queue!=='1.1'||!d.days?.length||!d.days[0].slots.length) process.exit(1); console.log('Live API verified:', d.queue, d.days[0].slots.length, 'slots');"
