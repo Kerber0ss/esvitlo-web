@@ -1,0 +1,602 @@
+{
+  "data": {
+    "no_data": false,
+    "last_update": "Оновлено: 02.11.2026 08:29",
+    "gpv_schedule": [
+      {
+        "start_time": "00:00",
+        "end_time": "00:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "00:30",
+        "end_time": "01:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "01:00",
+        "end_time": "01:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "01:30",
+        "end_time": "02:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "02:00",
+        "end_time": "02:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "02:30",
+        "end_time": "03:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "03:00",
+        "end_time": "03:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "03:30",
+        "end_time": "04:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "04:00",
+        "end_time": "04:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "04:30",
+        "end_time": "05:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "05:00",
+        "end_time": "05:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "05:30",
+        "end_time": "06:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "06:00",
+        "end_time": "06:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "06:30",
+        "end_time": "07:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "07:00",
+        "end_time": "07:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "07:30",
+        "end_time": "08:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "08:00",
+        "end_time": "08:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "08:30",
+        "end_time": "09:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "09:00",
+        "end_time": "09:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "09:30",
+        "end_time": "10:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "10:00",
+        "end_time": "10:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "10:30",
+        "end_time": "11:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "11:00",
+        "end_time": "11:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "11:30",
+        "end_time": "12:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "12:00",
+        "end_time": "12:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "12:30",
+        "end_time": "13:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "13:00",
+        "end_time": "13:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "13:30",
+        "end_time": "14:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "14:00",
+        "end_time": "14:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "14:30",
+        "end_time": "15:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "15:00",
+        "end_time": "15:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "15:30",
+        "end_time": "16:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "16:00",
+        "end_time": "16:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "16:30",
+        "end_time": "17:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "17:00",
+        "end_time": "17:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "17:30",
+        "end_time": "18:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "18:00",
+        "end_time": "18:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "18:30",
+        "end_time": "19:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "19:00",
+        "end_time": "19:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "19:30",
+        "end_time": "20:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "20:00",
+        "end_time": "20:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "20:30",
+        "end_time": "21:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "21:00",
+        "end_time": "21:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "21:30",
+        "end_time": "22:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "22:00",
+        "end_time": "22:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "22:30",
+        "end_time": "23:00",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "23:00",
+        "end_time": "23:30",
+        "status": 3,
+        "cherga": "3.2"
+      },
+      {
+        "start_time": "23:30",
+        "end_time": "00:00",
+        "status": 3,
+        "cherga": "3.2"
+      }
+    ],
+    "date_today": "02.11.2026",
+    "cherga_n": "3.2",
+    "lst_time_disc": [
+      {
+        "start_time": "10:00",
+        "end_time": "12:00",
+        "diff_time": "2 год. 00 хв."
+      }
+    ],
+    "dict_tom": {
+      "no_data": true,
+      "date_today": "03.11.2026",
+      "gpv_schedule": [
+        {
+          "start_time": "00:00",
+          "end_time": "00:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "00:30",
+          "end_time": "01:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "01:00",
+          "end_time": "01:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "01:30",
+          "end_time": "02:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "02:00",
+          "end_time": "02:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "02:30",
+          "end_time": "03:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "03:00",
+          "end_time": "03:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "03:30",
+          "end_time": "04:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "04:00",
+          "end_time": "04:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "04:30",
+          "end_time": "05:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "05:00",
+          "end_time": "05:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "05:30",
+          "end_time": "06:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "06:00",
+          "end_time": "06:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "06:30",
+          "end_time": "07:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "07:00",
+          "end_time": "07:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "07:30",
+          "end_time": "08:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "08:00",
+          "end_time": "08:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "08:30",
+          "end_time": "09:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "09:00",
+          "end_time": "09:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "09:30",
+          "end_time": "10:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "10:00",
+          "end_time": "10:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "10:30",
+          "end_time": "11:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "11:00",
+          "end_time": "11:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "11:30",
+          "end_time": "12:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "12:00",
+          "end_time": "12:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "12:30",
+          "end_time": "13:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "13:00",
+          "end_time": "13:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "13:30",
+          "end_time": "14:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "14:00",
+          "end_time": "14:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "14:30",
+          "end_time": "15:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "15:00",
+          "end_time": "15:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "15:30",
+          "end_time": "16:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "16:00",
+          "end_time": "16:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "16:30",
+          "end_time": "17:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "17:00",
+          "end_time": "17:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "17:30",
+          "end_time": "18:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "18:00",
+          "end_time": "18:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "18:30",
+          "end_time": "19:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "19:00",
+          "end_time": "19:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "19:30",
+          "end_time": "20:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "20:00",
+          "end_time": "20:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "20:30",
+          "end_time": "21:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "21:00",
+          "end_time": "21:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "21:30",
+          "end_time": "22:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "22:00",
+          "end_time": "22:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "22:30",
+          "end_time": "23:00",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "23:00",
+          "end_time": "23:30",
+          "status": 3,
+          "cherga": "3.2"
+        },
+        {
+          "start_time": "23:30",
+          "end_time": "00:00",
+          "status": 3,
+          "cherga": "3.2"
+        }
+      ],
+      "last_update": "",
+      "cherga_n": "3.2",
+      "lst_time_disc": []
+    }
+  }
+}

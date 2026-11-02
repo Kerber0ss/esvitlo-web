@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { mergeSlots, normalizeSlots, parseSchedule, stateFor, kyivClock, time, isQueue } from '../lib/schedule.ts';
 const raw = (start_time, end_time, status = 1, cherga = '1.1') => ({ start_time, end_time, status, cherga });
@@ -20,6 +21,44 @@ test('adjacent outage slots merge without merging across a gap or another status
   assert.equal(slots.reduce((n, s) => n + s.end - s.start, 0), 1440);
   assert.equal(slots.find(s => s.start === 180).status, -1);
   assert.equal(slots[0].end, 120);
+});
+test('live 3.2 response: numeric outages appear even when the entire grid says power is on', () => {
+  const body = JSON.parse(readFileSync(new URL('./fixtures/queue-3.2-2026-11-02.json', import.meta.url), 'utf8'));
+  assert.ok(body.data.gpv_schedule.every(slot => slot.status === 3));
+  const { days } = parseSchedule(body, '3.2');
+  assert.deepEqual(mergeSlots(days[0].slots).filter(slot => stateFor(slot.status).kind === 'off'), [
+    { start: 600, end: 720, status: 1 },
+  ]);
+  assert.equal(days[0].slots.filter(slot => slot.status === 1).reduce((n, slot) => n + slot.end - slot.start, 0), 120);
+  assert.equal(days[1].slots.filter(slot => slot.status === 1).length, 0);
+});
+test('numeric outages split slots at exact times and preserve grid outages, gaps and tomorrow', () => {
+  const body = response([raw('00:00', '01:00', 1), raw('01:00', '23:30', 3)]);
+  body.data.lst_time_disc = [{ start_time: '10:15', end_time: '12:10' }, { start_time: '23:45', end_time: '00:00' }];
+  body.data.dict_tom = { ...response([raw('00:00', '24:00', 3)]).data, date_today: '31.10.2026', lst_time_disc: [{ start_time: '08:00', end_time: '09:00' }] };
+  const { days } = parseSchedule(body, '1.1');
+  assert.equal(days[0].noData, true);
+  assert.deepEqual(mergeSlots(days[0].slots), [
+    { start: 0, end: 60, status: 1 }, { start: 60, end: 615, status: 3 },
+    { start: 615, end: 730, status: 1 }, { start: 730, end: 1410, status: 3 },
+    { start: 1410, end: 1425, status: -1 }, { start: 1425, end: 1440, status: 1 },
+  ]);
+  assert.deepEqual(mergeSlots(days[1].slots).filter(slot => slot.status === 1), [{ start: 480, end: 540, status: 1 }]);
+  assert.equal(days[0].slots.reduce((n, slot) => n + slot.end - slot.start, 0), 1440);
+  body.data.lst_time_disc = [];
+  assert.deepEqual(parseSchedule(body, '1.1').days[0].slots, normalizeSlots(body.data.gpv_schedule, '1.1'));
+});
+test('invalid numeric outage intervals fail validation', () => {
+  for (const lst_time_disc of [
+    [{ start_time: '25:00', end_time: '26:00' }],
+    [{ start_time: '12:00', end_time: '10:00' }],
+    [{ start_time: '10:00', end_time: '12:00' }, { start_time: '11:00', end_time: '13:00' }],
+    [{ start_time: '10:00' }],
+  ]) {
+    const body = response([raw('00:00', '24:00', 3)]);
+    body.data.lst_time_disc = lst_time_disc;
+    assert.throws(() => parseSchedule(body, '1.1'));
+  }
 });
 test('overlaps, invalid times, queue mismatches and malformed server data fail closed', () => {
   assert.throws(() => normalizeSlots([raw('00:00', '01:00'), raw('00:30', '01:30')], '1.1'));

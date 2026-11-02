@@ -11,8 +11,9 @@ const STATES: Record<number, State> = { 1: { label: "Відключення", ki
 export function stateFor(status: number): State {
   return STATES[status] ?? { label: status === -1 ? "Немає даних" : `Невизначений стан · статус ${status}`, kind: "unknown" };
 }
-const rawSlot = z.object({ start_time: z.string(), end_time: z.string(), status: z.number().int(), cherga: z.string().optional() });
-const rawDay = z.object({ date_today: z.string().regex(/^\d{2}\.\d{2}\.\d{4}$/), no_data: z.boolean(), gpv_schedule: z.array(rawSlot).max(1000) });
+const rawInterval = z.object({ start_time: z.string(), end_time: z.string() });
+const rawSlot = rawInterval.extend({ status: z.number().int(), cherga: z.string().optional() });
+const rawDay = z.object({ date_today: z.string().regex(/^\d{2}\.\d{2}\.\d{4}$/), no_data: z.boolean(), gpv_schedule: z.array(rawSlot).max(1000), lst_time_disc: z.array(rawInterval).max(1000).nullish() });
 const response = z.object({ data: rawDay.extend({ last_update: z.string().nullish(), dict_tom: rawDay.nullish(), cherga_n: z.string().nullish() }) });
 export function minutes(value: string): number {
   if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value) && value !== "24:00") throw new Error("Некоректний час у графіку");
@@ -55,7 +56,17 @@ export function mergeSlots(slots: Slot[]): Slot[] {
 export function parseSchedule(body: unknown, queue: string, fetchedAt = new Date().toISOString()): Schedule {
   const { data } = response.parse(body);
   if (data.cherga_n && data.cherga_n !== queue) throw new Error("Сервер повернув іншу чергу");
-  return { queue, fetchedAt, sourceUpdatedAt: data.last_update || "", days: [data, data.dict_tom].filter(d => d != null).map(d => ({ date: d.date_today, noData: d.no_data, slots: normalizeSlots(d.gpv_schedule, queue) })) };
+  return { queue, fetchedAt, sourceUpdatedAt: data.last_update || "", days: [data, data.dict_tom].filter(d => d != null).map(d => {
+    let slots = normalizeSlots(d.gpv_schedule, queue);
+    if (d.lst_time_disc?.length) {
+      // Numeric outage times can be populated while the entire grid still has status 3.
+      const outages = normalizeSlots(d.lst_time_disc.map(interval => ({ ...interval, status: 1 })), queue);
+      slots = slots.flatMap(slot => outages.filter(interval => interval.start < slot.end && interval.end > slot.start).map(interval => ({
+        start: Math.max(slot.start, interval.start), end: Math.min(slot.end, interval.end), status: interval.status === 1 ? 1 : slot.status,
+      })));
+    }
+    return { date: d.date_today, noData: d.no_data, slots };
+  }) };
 }
 export function kyivClock(timestamp: number) {
   const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Kyiv", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(timestamp);
