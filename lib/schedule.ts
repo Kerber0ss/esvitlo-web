@@ -53,6 +53,12 @@ export function mergeSlots(slots: Slot[]): Slot[] {
   }
   return merged;
 }
+export function withOutages(slots: Slot[], outages: { start: number; end: number }[]): Slot[] {
+  return slots.flatMap(slot => {
+    const cuts = [...new Set([slot.start, slot.end, ...outages.flatMap(interval => [interval.start, interval.end]).filter(value => value > slot.start && value < slot.end)])].sort((a, b) => a - b);
+    return cuts.slice(0, -1).map((start, index) => ({ start, end: cuts[index + 1], status: outages.some(interval => interval.start <= start && interval.end > start) ? 1 : slot.status }));
+  });
+}
 export function parseSchedule(body: unknown, queue: string, fetchedAt = new Date().toISOString()): Schedule {
   const { data } = response.parse(body);
   if (data.cherga_n && data.cherga_n !== queue) throw new Error("Сервер повернув іншу чергу");
@@ -61,9 +67,7 @@ export function parseSchedule(body: unknown, queue: string, fetchedAt = new Date
     if (d.lst_time_disc?.length) {
       // Numeric outage times can be populated while the entire grid still has status 3.
       const outages = normalizeSlots(d.lst_time_disc.map(interval => ({ ...interval, status: 1 })), queue);
-      slots = slots.flatMap(slot => outages.filter(interval => interval.start < slot.end && interval.end > slot.start).map(interval => ({
-        start: Math.max(slot.start, interval.start), end: Math.min(slot.end, interval.end), status: interval.status === 1 ? 1 : slot.status,
-      })));
+      slots = withOutages(slots, outages.filter(interval => interval.status === 1));
     }
     return { date: d.date_today, noData: d.no_data, slots };
   }) };

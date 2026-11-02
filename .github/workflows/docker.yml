@@ -27,7 +27,7 @@ jobs:
           cache: npm
       - run: npm ci --include=dev --no-audit --no-fund
       - name: Test schedule handling
-        run: node --experimental-strip-types --test tests/schedule.test.mjs
+        run: node --experimental-strip-types --test tests/*.test.mjs
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
@@ -57,3 +57,4 @@ jobs:
           done
           curl --fail --silent --show-error http://127.0.0.1:18080/ > /dev/null
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'http://127.0.0.1:18080/api/schedule?queue=bad')" = 400
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'http://127.0.0.1:18080/api/shutdowns?resource=bad')" = 400
