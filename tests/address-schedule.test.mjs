@@ -51,3 +51,11 @@ test('overlapping address causes are visible without importing a different queue
   assert.ok(slots.every(slot => !slot.causes.some(cause => cause.startsWith('ГПВ'))));
   assert.deepEqual(addressDayTimeline(data, schedule(), '03.11.2026'), [{ start: 0, end: 1440, status: -1, causes: [], outageKind: null }]);
 });
+test('address-only view never invents GPV power-on intervals for the house', () => {
+  const data = details([event('2026-11-02T10:00:00', '2026-11-02T18:00:00')]);
+  const slots = addressDaySlots(data, null, '02.11.2026');
+  assert.deepEqual(mergeSlots(slots), [{ start: 0, end: 600, status: -1 }, { start: 600, end: 1080, status: 1 }, { start: 1080, end: 1440, status: -1 }]);
+  const timeline = addressDayTimeline(data, null, '02.11.2026');
+  assert.deepEqual(timeline.filter(slot => slot.outageKind).map(slot => [slot.start, slot.end, slot.causes.join(' + ')]), [[600, 1080, 'Термінові планові роботи']]);
+  assert.equal(slots.reduce((sum, slot) => sum + slot.end - slot.start, 0), 1440);
+});
