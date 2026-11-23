@@ -142,11 +142,6 @@ export default function Home() {
         </div>
         <div className="kyiv-clock"><span>{clock.time}</span><small>час у Києві</small></div>
       </div>
-      <div className="address-facts">
-        <div className="address-fact"><span>Без світла за добу</span><strong>{addressOff.length ? duration(addressTotal) : "0 хв"}</strong></div>
-        <div className="address-fact"><span>Інтервалів</span><strong>{addressOff.length}</strong></div>
-        <div className="address-fact"><span>{addressIsToday ? "Наступне" : "Перше"}</span><strong>{addressNext ? time(addressNext.start) : "—"}</strong></div>
-      </div>
       <section className="timeline-section" aria-labelledby="address-timeline-title">
         <div className="section-heading">
           <div><h2 id="address-timeline-title">Відключення за адресою</h2><p>{dateLabel(addressDate)} · {address.label}</p></div>
@@ -182,6 +177,11 @@ export default function Home() {
           <a className="address-source" href="https://www.soe.com.ua/consumers/shutdowns" target="_blank" rel="noopener noreferrer">Джерело: Сумиобленерго <ArrowUpRight size={14} /></a>
         </div>
       </details>
+      <div className="address-facts">
+        <div className="address-fact"><span>Без світла за добу</span><strong>{addressOff.length ? duration(addressTotal) : "0 хв"}</strong></div>
+        <div className="address-fact"><span>Інтервалів</span><strong>{addressOff.length}</strong></div>
+        <div className="address-fact"><span>{addressIsToday ? "Наступне" : "Перше"}</span><strong>{addressNext ? time(addressNext.start) : "—"}</strong></div>
+      </div>
     </>
     : <div className="empty-outages address-empty">
       <span className="empty-icon"><MapPin size={25} /></span>
