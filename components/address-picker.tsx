@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,9 @@ function AddressField({ resource, parent, label, selected, onSelect }: { resourc
 /** Address selection plus the house's own shutdown details; reports both upwards. */
 export function AddressPicker({ refresh, onChange }: { refresh: number; onChange: (status: AddressStatus) => void }) {
   const [address, setAddress] = useState<Address>(EMPTY);
-  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<Address | null>(null);
+  const editButton = useRef<HTMLButtonElement>(null);
+  const returnFocus = useRef(false);
   const [ready, setReady] = useState(false);
   const [details, setDetails] = useState<AddressDetails | null>(null);
   const [detailsFor, setDetailsFor] = useState("");
@@ -68,7 +70,21 @@ export function AddressPicker({ refresh, onChange }: { refresh: number; onChange
     try { if (address.house) localStorage.setItem("svitlo.address", JSON.stringify(address)); else localStorage.removeItem("svitlo.address"); } catch { /* Saving an address is optional. */ }
   }, [address, ready]);
   const key = address.house && address.street ? `${address.street.id}:${address.house.id}` : "";
-  const expanded = !key || editing;
+  const expanded = !key || draft !== null;
+  const fields = draft ?? address;
+  useLayoutEffect(() => {
+    if (!expanded && returnFocus.current) {
+      returnFocus.current = false;
+      editButton.current?.focus();
+    }
+  }, [expanded]);
+
+  const confirmAddress = () => {
+    if (!fields.house) return;
+    returnFocus.current = true;
+    setAddress(fields);
+    setDraft(null);
+  };
   useEffect(() => {
     setError("");
     if (!ready || !key) { setLoading(false); return; }
@@ -93,18 +109,21 @@ export function AddressPicker({ refresh, onChange }: { refresh: number; onChange
         <h2><MapPin size={17} />Моя адреса</h2>
         {key && <p>{label}</p>}
       </div>
-      {key && <Button variant="ghost" size="sm" aria-expanded={expanded} aria-controls="address-inputs" onClick={() => setEditing(value => !value)}>
-        {expanded ? "Згорнути" : "Змінити"}<ChevronDown size={15} className={expanded ? "rotate-180" : undefined} />
+      {key && <Button ref={editButton} variant="ghost" size="sm" aria-expanded={expanded} aria-controls="address-inputs" onClick={() => setDraft(expanded ? null : address)}>
+        {expanded ? "Скасувати" : "Змінити"}<ChevronDown size={15} className={expanded ? "rotate-180" : undefined} />
       </Button>}
     </div>
     <div id="address-inputs" className="picker-inputs" hidden={!expanded}>
       {expanded && <>
         <div className="address-fields">
-          <AddressField resource="cities" label="Населений пункт" selected={address.city} onSelect={city => setAddress({ city, street: null, house: null })} />
-          <AddressField key={address.city?.id ?? "city"} resource="streets" parent={address.city?.id} label="Вулиця" selected={address.street} onSelect={street => setAddress(value => ({ ...value, street, house: null }))} />
-          <AddressField key={address.street?.id ?? "street"} resource="houses" parent={address.street?.id} label="Будинок" selected={address.house} onSelect={house => { setAddress(value => ({ ...value, house })); setEditing(false); }} />
+          <AddressField resource="cities" label="Населений пункт" selected={fields.city} onSelect={city => setDraft({ city, street: null, house: null })} />
+          <AddressField key={fields.city?.id ?? "city"} resource="streets" parent={fields.city?.id} label="Вулиця" selected={fields.street} onSelect={street => setDraft({ ...fields, street, house: null })} />
+          <AddressField key={fields.street?.id ?? "street"} resource="houses" parent={fields.street?.id} label="Будинок" selected={fields.house} onSelect={house => setDraft({ ...fields, house })} />
         </div>
-        {key && <Button className="mt-2" variant="ghost" size="sm" onClick={() => { setAddress(EMPTY); setDetails(null); setDetailsFor(""); }}>Очистити</Button>}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button size="sm" disabled={!fields.house} onClick={confirmAddress}>Готово</Button>
+          {key && <Button variant="ghost" size="sm" onClick={() => { setAddress(EMPTY); setDraft(null); setDetails(null); setDetailsFor(""); }}>Очистити</Button>}
+        </div>
       </>}
     </div>
     {error && <div className="error-banner" role="alert"><span>{error}{data ? " Показано попередню відповідь; вона може бути застарілою." : ""}</span><Button variant="ghost" onClick={() => setReload(value => value + 1)}>Повторити</Button></div>}
