@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Info, Layers, ListOrdered, MapPin, Moon, RefreshCw, Sun, Unplug, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -20,7 +20,8 @@ const QUEUE_TYPES = ["ГПВ", "ГАВ", "СГАВ", "АЧР"] as const;
 export default function Home() {
   const [mode, setMode] = useState<Mode>("address");
   const [queue, setQueue] = useState("1.1");
-  const [editingQueue, setEditingQueue] = useState(false);
+  const [queueDraft, setQueueDraft] = useState<string | null>(null);
+  const queueEditButton = useRef<HTMLButtonElement>(null);
   const [ready, setReady] = useState(false);
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [dayIndex, setDayIndex] = useState(0);
@@ -81,10 +82,12 @@ export default function Home() {
   const addressCause = (start: number, end: number) => [...new Set(addressSlots.filter(slot => slot.start < end && slot.end > start).flatMap(slot => slot.causes))].join(" + ");
   const houseQueues = address.details?.queues["ГПВ"] ?? [];
   const queueMatches = houseQueues.includes(queue);
+  const editingQueue = queueDraft !== null;
   const selectQueue = (value: string) => {
+    queueEditButton.current?.focus();
     setQueue(value);
     setDayIndex(0);
-    setEditingQueue(false);
+    setQueueDraft(null);
   };
 
   // ── черги: графік ГПВ, за потреби разом з адресою ──
@@ -284,15 +287,16 @@ export default function Home() {
               <h2><ListOrdered size={17} />Черга ГПВ</h2>
               <p>Черга {queue}</p>
             </div>
-            <Button variant="ghost" size="sm" aria-expanded={editingQueue} aria-controls="queue-inputs" onClick={() => setEditingQueue(value => !value)}>
-              {editingQueue ? "Згорнути" : "Змінити"}<ChevronDown size={15} className={editingQueue ? "rotate-180" : undefined} />
+            <Button ref={queueEditButton} variant="ghost" size="sm" aria-expanded={editingQueue} aria-controls="queue-inputs" onClick={() => setQueueDraft(editingQueue ? null : queue)}>
+              {editingQueue ? "Скасувати" : "Змінити"}<ChevronDown size={15} className={editingQueue ? "rotate-180" : undefined} />
             </Button>
           </div>
           <div id="queue-inputs" className="picker-inputs" hidden={!editingQueue}>
             <div className="queue-config">
               <div className="queue-picker">
-                <NativeSelect aria-label="Черга ГПВ" value={queue} onChange={event => selectQueue(event.target.value)} className="queue-select">{QUEUES.map(value => <option key={value} value={value}>Черга {value}</option>)}</NativeSelect>
+                <NativeSelect aria-label="Черга ГПВ" value={queueDraft ?? queue} onChange={event => setQueueDraft(event.target.value)} className="queue-select">{QUEUES.map(value => <option key={value} value={value}>Черга {value}</option>)}</NativeSelect>
               </div>
+              <Button size="sm" className="self-center" onClick={() => selectQueue(queueDraft ?? queue)}>Готово</Button>
               <span className="saved-hint"><Check size={12} /> Запам’ятаємо вибір</span>
             </div>
           </div>
