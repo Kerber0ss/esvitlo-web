@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MapPin } from "lucide-react";
+import { ChevronDown, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -49,6 +49,7 @@ function AddressField({ resource, parent, label, selected, onSelect }: { resourc
 /** Address selection plus the house's own shutdown details; reports both upwards. */
 export function AddressPicker({ refresh, onChange }: { refresh: number; onChange: (status: AddressStatus) => void }) {
   const [address, setAddress] = useState<Address>(EMPTY);
+  const [editing, setEditing] = useState(false);
   const [ready, setReady] = useState(false);
   const [details, setDetails] = useState<AddressDetails | null>(null);
   const [detailsFor, setDetailsFor] = useState("");
@@ -67,6 +68,7 @@ export function AddressPicker({ refresh, onChange }: { refresh: number; onChange
     try { if (address.house) localStorage.setItem("svitlo.address", JSON.stringify(address)); else localStorage.removeItem("svitlo.address"); } catch { /* Saving an address is optional. */ }
   }, [address, ready]);
   const key = address.house && address.street ? `${address.street.id}:${address.house.id}` : "";
+  const expanded = !key || editing;
   useEffect(() => {
     setError("");
     if (!ready || !key) { setLoading(false); return; }
@@ -86,14 +88,24 @@ export function AddressPicker({ refresh, onChange }: { refresh: number; onChange
   useEffect(() => onChange({ details: data, selected: !!key, label, loading, error }), [data, key, label, loading, error, onChange]);
   const checked = data ? kyivClock(Date.parse(data.fetchedAt)).time : "";
   return <div className="address-bar">
-    <div className="address-bar-head">
-      <h2><MapPin size={17} />Моя адреса</h2>
-      {key && <Button variant="ghost" size="sm" onClick={() => { setAddress(EMPTY); setDetails(null); setDetailsFor(""); }}>Очистити</Button>}
+    <div className="picker-heading">
+      <div className="picker-heading-copy">
+        <h2><MapPin size={17} />Моя адреса</h2>
+        {key && <p>{label}</p>}
+      </div>
+      {key && <Button variant="ghost" size="sm" aria-expanded={expanded} aria-controls="address-inputs" onClick={() => setEditing(value => !value)}>
+        {expanded ? "Згорнути" : "Змінити"}<ChevronDown size={15} className={expanded ? "rotate-180" : undefined} />
+      </Button>}
     </div>
-    <div className="address-fields">
-      <AddressField resource="cities" label="Населений пункт" selected={address.city} onSelect={city => setAddress({ city, street: null, house: null })} />
-      <AddressField key={address.city?.id ?? "city"} resource="streets" parent={address.city?.id} label="Вулиця" selected={address.street} onSelect={street => setAddress(value => ({ ...value, street, house: null }))} />
-      <AddressField key={address.street?.id ?? "street"} resource="houses" parent={address.street?.id} label="Будинок" selected={address.house} onSelect={house => setAddress(value => ({ ...value, house }))} />
+    <div id="address-inputs" className="picker-inputs" hidden={!expanded}>
+      {expanded && <>
+        <div className="address-fields">
+          <AddressField resource="cities" label="Населений пункт" selected={address.city} onSelect={city => setAddress({ city, street: null, house: null })} />
+          <AddressField key={address.city?.id ?? "city"} resource="streets" parent={address.city?.id} label="Вулиця" selected={address.street} onSelect={street => setAddress(value => ({ ...value, street, house: null }))} />
+          <AddressField key={address.street?.id ?? "street"} resource="houses" parent={address.street?.id} label="Будинок" selected={address.house} onSelect={house => { setAddress(value => ({ ...value, house })); setEditing(false); }} />
+        </div>
+        {key && <Button className="mt-2" variant="ghost" size="sm" onClick={() => { setAddress(EMPTY); setDetails(null); setDetailsFor(""); }}>Очистити</Button>}
+      </>}
     </div>
     {error && <div className="error-banner" role="alert"><span>{error}{data ? " Показано попередню відповідь; вона може бути застарілою." : ""}</span><Button variant="ghost" onClick={() => setReload(value => value + 1)}>Повторити</Button></div>}
     {data && <p className="address-bar-note">Відключення за адресою · перевірено о {checked}<span className="address-bar-dot" />ГПВ {data.queues["ГПВ"].join(", ") || "не вказано"}</p>}

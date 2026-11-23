@@ -20,6 +20,7 @@ const QUEUE_TYPES = ["ГПВ", "ГАВ", "СГАВ", "АЧР"] as const;
 export default function Home() {
   const [mode, setMode] = useState<Mode>("address");
   const [queue, setQueue] = useState("1.1");
+  const [editingQueue, setEditingQueue] = useState(false);
   const [ready, setReady] = useState(false);
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [dayIndex, setDayIndex] = useState(0);
@@ -80,6 +81,11 @@ export default function Home() {
   const addressCause = (start: number, end: number) => [...new Set(addressSlots.filter(slot => slot.start < end && slot.end > start).flatMap(slot => slot.causes))].join(" + ");
   const houseQueues = address.details?.queues["ГПВ"] ?? [];
   const queueMatches = houseQueues.includes(queue);
+  const selectQueue = (value: string) => {
+    setQueue(value);
+    setDayIndex(0);
+    setEditingQueue(false);
+  };
 
   // ── черги: графік ГПВ, за потреби разом з адресою ──
   const queueDay = data ? (showCombined ? data.days.find(day => day.date === calendarDates[activeDay]) : data.days[activeDay] ?? data.days[0]) ?? null : null;
@@ -272,13 +278,25 @@ export default function Home() {
           </div>
         </div>
         {mode !== "queue" && <AddressPicker refresh={refresh} onChange={setAddress} />}
-        {mode !== "address" && <div className="queue-config">
-          <div className="queue-picker">
-            <label htmlFor="queue">Черга ГПВ</label>
-            <NativeSelect id="queue" value={queue} onChange={event => { setQueue(event.target.value); setDayIndex(0); }} className="queue-select">{QUEUES.map(value => <option key={value} value={value}>Черга {value}</option>)}</NativeSelect>
+        {mode !== "address" && <div className="address-bar">
+          <div className="picker-heading">
+            <div className="picker-heading-copy">
+              <h2><ListOrdered size={17} />Черга ГПВ</h2>
+              <p>Черга {queue}</p>
+            </div>
+            <Button variant="ghost" size="sm" aria-expanded={editingQueue} aria-controls="queue-inputs" onClick={() => setEditingQueue(value => !value)}>
+              {editingQueue ? "Згорнути" : "Змінити"}<ChevronDown size={15} className={editingQueue ? "rotate-180" : undefined} />
+            </Button>
           </div>
-          {address.details && !queueMatches && <div className="queue-config-note"><Info size={15} /><span>Черга не збігається з адресою.</span>{houseQueues.filter(isQueue).map(value => <Button key={value} variant="ghost" size="sm" onClick={() => { setQueue(value); setDayIndex(0); }}>ГПВ {value}</Button>)}</div>}
-          <span className="saved-hint"><Check size={12} /> Запам’ятаємо вибір</span>
+          <div id="queue-inputs" className="picker-inputs" hidden={!editingQueue}>
+            <div className="queue-config">
+              <div className="queue-picker">
+                <NativeSelect aria-label="Черга ГПВ" value={queue} onChange={event => selectQueue(event.target.value)} className="queue-select">{QUEUES.map(value => <option key={value} value={value}>Черга {value}</option>)}</NativeSelect>
+              </div>
+              <span className="saved-hint"><Check size={12} /> Запам’ятаємо вибір</span>
+            </div>
+          </div>
+          {address.details && !queueMatches && <div className="queue-config-note"><Info size={15} /><span>Черга не збігається з адресою.</span>{houseQueues.filter(isQueue).map(value => <Button key={value} variant="ghost" size="sm" onClick={() => selectQueue(value)}>ГПВ {value}</Button>)}</div>}
         </div>}
         {error && mode !== "address" && <div className="error-banner" role="alert"><Info size={19} /><span>{error}{data ? " Показано попередню відповідь; вона може бути застарілою." : ""}</span><Button variant="ghost" onClick={() => setRefresh(value => value + 1)}>Повторити <ArrowRight size={15} /></Button></div>}
         {mode === "address" ? <div className="day-content address-content">{addressPanel}</div> : queuePanel}
