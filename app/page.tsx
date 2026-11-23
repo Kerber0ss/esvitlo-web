@@ -199,12 +199,6 @@ export default function Home() {
       <div className="loading-bars">{Array.from({ length: 24 }, (_, i) => <i key={i} />)}</div>
     </div>
     : day ? <div id="day-panel" role="tabpanel" aria-labelledby={`day-tab-${activeDay}`} aria-busy={busy} className={busy ? "day-content refreshing" : "day-content"}>
-      {queueMode && <div className="source-notice"><Info size={17} /><p><strong>Це графік по області.</strong> ГПВ публікується для всієї Сумської області, тому опубліковані інтервали не завжди діють у конкретному місті. Точні відключення — на вкладці «Моя адреса».</p></div>}
-      {showCombined && !address.details && <div className="source-notice"><Info size={17} /><p><strong>Адресу не вказано.</strong> Показано лише ГПВ. Додай будинок вище, щоб побачити обидва джерела на одній шкалі.</p></div>}
-      {gpvUnconfirmed && <div className="source-notice"><Info size={17} /><p><strong>ГПВ не підтверджено джерелом.</strong> Показуємо всі отримані інтервали, але E-Svitlo повертає «немає опублікованого графіка». Жовті інтервали не гарантують наявності світла.</p></div>}
-      {queueMode && address.selected && !showCombined && <div className="source-notice"><Info size={17} /><p>{address.loading ? "Завантажуємо адресні відключення. Поки показано лише ГПВ." : "Адресні відключення не отримано. Показано лише ГПВ; загальний час може бути більшим."}</p></div>}
-      {showCombined && address.details && !queueMatches && <div className="source-notice"><Info size={17} /><p>Обрана черга ГПВ не відповідає цьому будинку. Показано адресні відключення; решта часу — невизначений стан. Обери чергу будинку в блоці адреси вище.</p></div>}
-      {showCombined && address.details && queueMatches && !queueDay && <div className="source-notice"><Info size={17} /><p>ГПВ на цю дату не отримано. Показано адресні відключення; решта часу — невизначений стан.</p></div>}
       <div className={`status-overview ${currentState?.kind ?? "unknown"}`}>
         <div className="status-icon">{currentState?.kind === "on" ? <Zap size={26} /> : currentState?.kind === "off" ? <Unplug size={26} /> : <Clock3 size={26} />}</div>
         <div className="status-copy">
@@ -213,11 +207,6 @@ export default function Home() {
           <p>{currentState?.kind === "off" && current ? `Поточний інтервал до ${time(current.end)}` : nextOutage ? `Наступне відключення о ${time(nextOutage.start)}` : "Усі отримані інтервали — на часовій шкалі нижче."}</p>
         </div>
         <div className="kyiv-clock"><span>{clock?.time ?? "—:—"}</span><small>час у Києві</small></div>
-      </div>
-      <div className="summary-grid">
-        <div className="summary-item"><span><i className="legend-dot off" />Без світла</span><strong>{unknown === 1440 ? "—" : duration(total("off"))}</strong><small>{outages.length ? `${outages.length} інтервалів за добу` : "за отриманими інтервалами"}</small></div>
-        <div className="summary-item"><span><i className="legend-dot on" />Зі світлом</span><strong>{unknown === 1440 ? "—" : duration(total("on"))}</strong><small>{gpvUnconfirmed ? "джерело не підтверджує ГПВ" : "за отриманим графіком"}</small></div>
-        <div className="summary-item"><span><i className="legend-dot unknown" />Невизначений стан</span><strong>{duration(unknown)}</strong><small>відсутній або невідомий статус</small></div>
       </div>
       <section className="timeline-section" aria-labelledby="timeline-title">
         <div className="section-heading">
@@ -251,6 +240,17 @@ export default function Home() {
         <summary><span>Усі інтервали <small>{merged.length}</small></span><ChevronDown size={16} /></summary>
         <div className="all-intervals-grid">{merged.map(slot => <div key={slot.start}><i className={`legend-dot ${stateFor(slot.status).kind}`} /><strong>{time(slot.start)} — {time(slot.end)}</strong><span>{causesFor(slot.start, slot.end) || stateFor(slot.status).label}</span></div>)}</div>
       </details>
+      <div className="summary-grid">
+        <div className="summary-item"><span><i className="legend-dot off" />Без світла</span><strong>{unknown === 1440 ? "—" : duration(total("off"))}</strong><small>{outages.length ? `${outages.length} інтервалів за добу` : "за отриманими інтервалами"}</small></div>
+        <div className="summary-item"><span><i className="legend-dot on" />Зі світлом</span><strong>{unknown === 1440 ? "—" : duration(total("on"))}</strong><small>{gpvUnconfirmed ? "джерело не підтверджує ГПВ" : "за отриманим графіком"}</small></div>
+        <div className="summary-item"><span><i className="legend-dot unknown" />Невизначений стан</span><strong>{duration(unknown)}</strong><small>відсутній або невідомий статус</small></div>
+      </div>
+      {queueMode && <div className="source-notice"><Info size={17} /><p><strong>Це графік по області.</strong> ГПВ публікується для всієї Сумської області, тому опубліковані інтервали не завжди діють у конкретному місті. Точні відключення — на вкладці «Моя адреса».</p></div>}
+      {showCombined && !address.details && <div className="source-notice"><Info size={17} /><p><strong>Адресу не вказано.</strong> Показано лише ГПВ. Додай будинок вище, щоб побачити обидва джерела на одній шкалі.</p></div>}
+      {gpvUnconfirmed && <div className="source-notice"><Info size={17} /><p><strong>ГПВ не підтверджено джерелом.</strong> Показуємо всі отримані інтервали, але E-Svitlo повертає «немає опублікованого графіка». Жовті інтервали не гарантують наявності світла.</p></div>}
+      {queueMode && address.selected && !showCombined && <div className="source-notice"><Info size={17} /><p>{address.loading ? "Завантажуємо адресні відключення. Поки показано лише ГПВ." : "Адресні відключення не отримано. Показано лише ГПВ; загальний час може бути більшим."}</p></div>}
+      {showCombined && address.details && !queueMatches && <div className="source-notice"><Info size={17} /><p>Обрана черга ГПВ не відповідає цьому будинку. Показано адресні відключення; решта часу — невизначений стан. Обери чергу будинку в блоці адреси вище.</p></div>}
+      {showCombined && address.details && queueMatches && !queueDay && <div className="source-notice"><Info size={17} /><p>ГПВ на цю дату не отримано. Показано адресні відключення; решта часу — невизначений стан.</p></div>}
     </div>
     : <div className="empty-outages"><span className="empty-icon"><Info size={25} /></span><div><h3>Графік недоступний</h3><p>Онови сторінку або спробуй іншу чергу.</p></div></div>;
 
